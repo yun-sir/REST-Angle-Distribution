@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<!DOCTYPE gdml [
+<!ENTITY materials SYSTEM "materials.xml">
+]>
+
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+    <define>
+        <constant name="PI" value="3.14159265358979323846264" />
+    </define>
+
+    &materials;
+
+    <solids>
+
+        <box name="WorldSolid" x="10000" y="10000" z="10000" lunit="mm" />
+        <box name="sourceSolid" x="1" y="1" z="1" lunit="mm" />
+        <sphere name = "sphere_big" rmin="0" rmax="500" starttheta="0" deltaphi="360" deltatheta="180" aunit="deg" lunit= "mm"/>
+        <sphere name = "sphere_small" rmin="0" rmax="490" starttheta="0" deltaphi="360" deltatheta="180" aunit="deg" lunit= "mm"/>
+
+        <subtraction name="sphere">
+            <first ref="sphere_big"/>
+            <second ref="sphere_small"/>
+            <position name="Position_sphere" x="0" y="0" z="0" />
+        </subtraction>
+
+        <!-- <union name="HDPESheldingSolid_1" >
+            <first ref="HDPESheldingWall" />
+            <second ref="HDPESheldingCap" />
+            <position name="Position_guaguagua2" x="0" y="0" z="0.5*(HDPESheldingLength+HDPESheldingCapLength)" />
+        </union> -->
+
+    </solids>
+
+    <structure>
+
+        <volume name="sphereVolume">
+            <materialref ref="Copper"/>
+            <solidref ref="sphere"/>
+        </volume>
+
+        <volume name="sourceVolume">
+            <materialref ref="Copper"/>
+            <solidref ref="sourceSolid"/>
+        </volume>
+
+        <volume name="World">
+
+            <materialref ref="Air"/>
+            <solidref ref="WorldSolid"/>
+
+            <physvol name="spherePhy">
+                <volumeref ref="sphereVolume"/>
+                <position name="sphereVolumePosition" unit="mm" x="0" y="0" z="0"/>
+            </physvol>
+            <physvol name="sourcePhy">
+                <volumeref ref="sourceVolume"/>
+                <position name="sourceVolumePosition" unit="mm" x="0" y="0" z="0"/>
+            </physvol>
+
+        </volume>
+
+    </structure>
+
+    <setup name="Default" version="1.0">
+        <world ref="World"/>
+    </setup>
+
+</gdml>
